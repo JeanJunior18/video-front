@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import './App.css'
 
@@ -6,6 +6,8 @@ function App() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [showVideo, setShowVideo] = useState(false)
   const [stream, setStream] = useState<MediaStream | null>(null)
+
+  const videoDimensions = useMemo(() => ({ width: 600, height: 400 }), [])
 
 
   const setVideoRef = (_stream: MediaStream | null) => {
@@ -43,6 +45,21 @@ function App() {
     }
   }
 
+  const getCanvas = () => {
+    if (!videoRef.current) return
+    const { height, width } = videoDimensions
+    const canvas = document.createElement('canvas')
+    canvas.height = height
+    canvas.width = width
+    canvas.getContext('2d')?.drawImage(videoRef.current, 0, 0, width, height)
+    return canvas
+
+  }
+
+  const takeScreenShot = () => {
+    const canvas = getCanvas()
+    console.log(canvas?.toDataURL())
+  }
 
   useEffect(() => {
     requestUserMedia()
@@ -50,9 +67,9 @@ function App() {
 
   return (
     <div className="App">
-      <video ref={videoRef} style={{ transform: 'scaleX(-1)' }} autoPlay />
+      <video ref={videoRef} style={{ ...videoDimensions, transform: 'scaleX(-1)' }} autoPlay />
       <div className="card">
-        <button>
+        <button onClick={takeScreenShot}>
           Take a photo
         </button>
         <button onClick={() => setShowVideo(!showVideo)}>

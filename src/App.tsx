@@ -28,7 +28,7 @@ function App() {
 
     if (showVideo) {
       navigator.mediaDevices
-        .getUserMedia({ video: true })
+        .getUserMedia({ video: true, audio: true })
         .then(stream => {
           // Should be check if exist a old stream open
           handleUserMedia(stream)
@@ -69,15 +69,15 @@ function App() {
     <div className="App">
       <video ref={videoRef} style={{ ...videoDimensions, transform: 'scaleX(-1)' }} autoPlay />
       <div className="card">
-        <button onClick={takeScreenShot}>
+        {showVideo && (<button onClick={takeScreenShot}>
           Take a photo
-        </button>
+        </button>)}
         <button onClick={() => setShowVideo(!showVideo)}>
           {showVideo ? 'Turn off cam' : 'Turn on cam'}
         </button>
-        <p>
+        {showVideo && (<p>
           Smile! you're being recorded
-        </p>
+        </p>)}
       </div>
     </div>
   )
